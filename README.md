@@ -3,7 +3,7 @@ Repositório destinado a compartilhar todo conhecimento que conseguir com as min
 
 PS: Antes de começar(Instalar o Tensorflow)
 //MAIS INFROMAÇÕES EM https://www.tensorflow.org/install/
-Comoe eu fiz:
+Como eu fiz:
 No terminal do Ubuntu
 //Baixar pip
 //Usar esse comando para python 2.7
