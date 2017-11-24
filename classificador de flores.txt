@@ -1,0 +1,63 @@
+NO TERMINAL DO UBUNTU
+PRIMEIRO CONTATO COM TENSORFLOW
+Fontes: 
+https://www.youtube.com/watch?v=cSKfRcEDGUs&t=257s
+https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/?utm_campaign=chrome_series_machinelearning_063016&utm_source=gdev&utm_medium=yt-desc#4
+
+1-//Clonar git
+//Talvez você precise instalar o comando git através do apt-get instal
+git clone https://github.com/googlecodelabs/tensorflow-for-poets-2
+
+2-//mudar o diretório para tensorflow-for-poets
+cd tensorflow-for-poets-2
+
+3-// Fazer download da coleção de fotos desse dataset de flores
+//Talvez você precise usar o apt-get install para o comando curl
+curl http://download.tensorflow.org/example_images/flower_photos.tgz \
+    | tar xz -C tf_files
+
+4-//Confirmar que as fotos foram baixadas
+ls tf_files/flower_photos
+
+//Esse comando deve retornar a seguinte saída
+daisy/
+dandelion/
+roses/
+sunflowers/
+tulip/
+LICENSE.txt
+
+5-// Iniciar o tensorboard através desse comando
+tensorboard --logdir tf_files/training_summaries &
+
+//O seguinte erro significa que você já está com o tensorboard aberto
+ERROR:tensorflow:TensorBoard attempted to bind to port 6006, but it was already in use
+
+6-//Configurar o MOBILENET com o tamanho das fotos que ele receberá e o tamanho do modelo
+//Através destes comandos
+IMAGE_SIZE=224
+ARCHITECTURE="mobilenet_0.50_${IMAGE_SIZE}"
+
+	Existem dois modelos de classificadores de imagens famosos: o Inception e o MobileNet.
+	Ambos são redes que já foram treinadas. Mas, utilizando uma técnica chamada de Retraining ou Transfêrencia de Aprendizado
+	podemos utilizar conhecimentos já aprendidos e configurálos para atender nossas necessidades de classificação atuais. 
+	Ps: essa técnica consiste em treinar apenas a última camada da rede neural, mantendo os milhares de parâmetros aprendidos pelo modelo escolhido. 
+
+7-//Esse código python (DENTRO DO PYTHON) executa o script do retreinamento e configura a última camada da rede neural para classificar flores usando as fotos que você baixou 
+python -m scripts.retrain \
+  --bottleneck_dir=tf_files/bottlenecks \
+  --how_many_training_steps=500 \
+  --model_dir=tf_files/models/ \
+  --summaries_dir=tf_files/training_summaries/"${ARCHITECTURE}" \
+  --output_graph=tf_files/retrained_graph.pb \
+  --output_labels=tf_files/retrained_labels.txt \
+  --architecture="${ARCHITECTURE}" \
+  --image_dir=tf_files/flower_photos
+
+8-// Para Classificar uma foto existente em um dos diretórios de treino. Executar esse script
+
+python -m scripts.label_image \
+    --graph=tf_files/retrained_graph.pb  \
+    --image=tf_files/flower_photos/daisy/21652746_cc379e0eea_m.jpg
+
+//Repare na última linha. Esta, está apontando o caminho até a foto que se deseja classificar
